@@ -27,6 +27,7 @@ module.exports = merge(base, {
     externals: {
         'macos-notification-state': 'require("macos-notification-state")',
         'windows-focus-assist': 'require("windows-focus-assist")',
+        'electron-screenshots': 'require("electron-screenshots")',
     },
     module: {
         rules: [{

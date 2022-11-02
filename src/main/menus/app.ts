@@ -3,7 +3,18 @@
 // See LICENSE.txt for license information.
 'use strict';
 
-import {app, ipcMain, Menu, MenuItemConstructorOptions, MenuItem, session, shell, WebContents, clipboard} from 'electron';
+import {
+    app,
+    ipcMain,
+    Menu,
+    MenuItemConstructorOptions,
+    MenuItem,
+    session,
+    shell,
+    WebContents,
+    clipboard,
+    globalShortcut,
+} from 'electron';
 
 import {BROWSER_HISTORY_BUTTON, OPEN_TEAMS_DROPDOWN, SHOW_NEW_SERVER_MODAL} from 'common/communication';
 import {t} from 'common/utils/util';
@@ -14,6 +25,7 @@ import {localizeMessage} from 'main/i18nManager';
 import WindowManager from 'main/windows/windowManager';
 import {UpdateManager} from 'main/autoUpdater';
 import downloadsManager from 'main/downloadsManager';
+import Screenshots from 'electron-screenshots';
 
 export function createTemplate(config: Config, updateManager: UpdateManager) {
     const separatorItem: MenuItemConstructorOptions = {
@@ -302,6 +314,36 @@ export function createTemplate(config: Config, updateManager: UpdateManager) {
         ],
     };
     template.push(windowMenu);
+
+    // Tools
+    template.push({
+        id: 'tools',
+        label: localizeMessage('main.menus.app.tools', '&Tools'),
+        submenu: [{
+            label: localizeMessage('main.menus.app.tools.screenShot', 'Screenshot'),
+            accelerator: 'CmdOrCtrl+Shift+d',
+            click() {
+                const screenshots = new Screenshots({
+                    lang: {
+                        magnifier_position_label: 'Position',
+                        operation_ok_title: 'OK',
+                        operation_cancel_title: 'Cancel',
+                        operation_save_title: 'Save',
+                        operation_redo_title: 'Redo',
+                        operation_undo_title: 'Undo',
+                        operation_mosaic_title: 'Mosaic',
+                        operation_text_title: 'Text',
+                        operation_brush_title: 'Brush',
+                        operation_arrow_title: 'Arrow',
+                        operation_ellipse_title: 'Ellipse',
+                        operation_rectangle_title: 'Rectangle',
+                    },
+                });
+                screenshots.startCapture();
+            },
+        }],
+    });
+
     const submenu = [];
     if (updateManager && config.canUpgrade) {
         if (updateManager.versionDownloaded) {
